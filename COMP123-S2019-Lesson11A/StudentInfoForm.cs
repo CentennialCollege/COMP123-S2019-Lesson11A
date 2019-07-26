@@ -26,25 +26,10 @@ namespace COMP123_S2019_Lesson11A
 
         private void StudentInfoForm_Activated(object sender, EventArgs e)
         {
-            // open file stream to read
-            using(StreamReader inputStream = new StreamReader(
-                File.Open("Student.txt", FileMode.Open)))
-            {
-                // read stuff from the file into the Student object
-                Program.student.id = int.Parse(inputStream.ReadLine()) ;
-                Program.student.StudentID = inputStream.ReadLine();
-                Program.student.FirstName = inputStream.ReadLine();
-                Program.student.LastName = inputStream.ReadLine();
-
-                //cleanup
-                inputStream.Close();
-                inputStream.Dispose();
-
-                IDDataLabel.Text = Program.student.id.ToString();
-                StudentIDDataLabel.Text = Program.student.StudentID;
-                FirstNameDataLabel.Text = Program.student.FirstName;
-                LastNameDataLabel.Text = Program.student.LastName;
-            }
+            IDDataLabel.Text = Program.student.id.ToString();
+            StudentIDDataLabel.Text = Program.student.StudentID;
+            FirstNameDataLabel.Text = Program.student.FirstName;
+            LastNameDataLabel.Text = Program.student.LastName;
         }
 
         private void StudentInfoForm_FormClosing(object sender, FormClosingEventArgs e)
