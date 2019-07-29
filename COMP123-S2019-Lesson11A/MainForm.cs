@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -71,18 +72,18 @@ namespace COMP123_S2019_Lesson11A
             if (result != DialogResult.Cancel)
             {
                 // open a stream to write
-                using (StreamWriter outputString = new StreamWriter(
+                using (StreamWriter outputStream = new StreamWriter(
                     File.Open(StudentSaveFileDialog.FileName, FileMode.Create)))
                 {
                     // write stuff to the file
-                    outputString.WriteLine(Program.student.id);
-                    outputString.WriteLine(Program.student.StudentID);
-                    outputString.WriteLine(Program.student.FirstName);
-                    outputString.WriteLine(Program.student.LastName);
+                    outputStream.WriteLine(Program.student.id);
+                    outputStream.WriteLine(Program.student.StudentID);
+                    outputStream.WriteLine(Program.student.FirstName);
+                    outputStream.WriteLine(Program.student.LastName);
 
                     // cleanup
-                    outputString.Close();
-                    outputString.Dispose();
+                    outputStream.Close();
+                    outputStream.Dispose();
                 }
 
                 MessageBox.Show("File Saved Successfully!", "Saving...",
@@ -125,6 +126,68 @@ namespace COMP123_S2019_Lesson11A
                 NextButton_Click(sender, e);
             }
 
+        }
+
+        private void openBinaryFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // configuration for openFileDialog
+            StudentOpenFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            StudentOpenFileDialog.FileName = "Student.dat";
+            StudentOpenFileDialog.Filter = "Binary Files (*.dat)|*.dat|All Files (*.*)|*.*";
+
+            var result = StudentOpenFileDialog.ShowDialog();
+
+            if (result != DialogResult.Cancel)
+            {
+                // open file stream to read
+                using (BinaryReader inputStream = new BinaryReader(
+                    File.Open(StudentOpenFileDialog.FileName, FileMode.Open)))
+                {
+                    // read stuff from the file into the Student object
+                    Program.student.id = int.Parse( inputStream.ReadString());
+                    Program.student.StudentID = inputStream.ReadString();
+                    Program.student.FirstName = inputStream.ReadString();
+                    Program.student.LastName = inputStream.ReadString();
+
+                    //cleanup
+                    inputStream.Close();
+                    inputStream.Dispose();
+                }
+
+                NextButton_Click(sender, e);
+            }
+        }
+
+        private void saveBinaryFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // configuration for saveFileDialog
+            StudentSaveFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            StudentSaveFileDialog.FileName = "Student.dat";
+            StudentSaveFileDialog.Filter = "Binary Files (*.dat)|*.dat|All Files (*.*)|*.*";
+
+
+            var result = StudentSaveFileDialog.ShowDialog();
+            if (result != DialogResult.Cancel)
+            {
+                // open a binary stream to write
+                using (BinaryWriter outputStream = new BinaryWriter(
+                    File.Open(StudentSaveFileDialog.FileName, FileMode.Create)))
+                {
+                    // write stuff to the file
+                    outputStream.Write(Program.student.id.ToString());
+                    outputStream.Write(Program.student.StudentID);
+                    outputStream.Write(Program.student.FirstName);
+                    outputStream.Write(Program.student.LastName);
+
+                    //cleanup
+                    outputStream.Flush();
+                    outputStream.Close();
+                    outputStream.Dispose();
+                }
+
+                MessageBox.Show("Binary File Saved Successfully!", "Saving Binary File...",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }
